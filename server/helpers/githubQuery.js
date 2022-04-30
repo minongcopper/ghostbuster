@@ -1,8 +1,14 @@
 const axios = require('axios');
+const axiosRetry = require('axios-retry');
 
 const { GITHUB_UTIL_TOKEN, GITHUB_UTIL_URL } = process.env;
 
 module.exports = async function githubQuery(githubUrl) {
+  axiosRetry(axios, {
+    retries: 30,
+    shouldResetTimeout: true,
+    retryCondition: (_error) => true // retry no matter what
+  });
   try {
     const response = await axios({
       method: 'post',
